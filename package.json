@@ -1,0 +1,25 @@
+{
+  "name": "hs-lockup-names",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Locked up 10k handshake names",
+  "keywords": [
+    "handshake",
+    "names",
+    "icann-lockup",
+    "soft-fork"
+  ],
+  "license": "MIT",
+  "repository": "git://github.com/handshake-org/hs-lockup-names.git",
+  "homepage": "https://github.com/handshake-org/hs-lockup-names",
+  "bugs": {
+    "url": "https://github.com/handshake-org/hs-lockup-names/issues"
+  },
+  "author": "Nodari Chkuaselidze <nodar.chkuaselidze@gmail.com>",
+  "scripts": {},
+  "dependencies": {
+  },
+  "engines": {
+    "node": ">= 14.0.0"
+  }
+}
