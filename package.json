@@ -18,6 +18,9 @@
   "author": "Nodari Chkuaselidze <nodar.chkuaselidze@gmail.com>",
   "scripts": {},
   "dependencies": {
+    "bfile": "^0.2.3",
+    "bns": "^0.15.0",
+    "hsd": "^5.0.1"
   },
   "engines": {
     "node": ">= 14.0.0"
