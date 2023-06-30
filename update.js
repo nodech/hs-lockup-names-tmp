@@ -137,21 +137,6 @@ const ALEXA = (() => {
   return result;
 })();
 
-// const WORDS = (() => {
-//   const data = fs.readFileSync(WORDS_PATH, 'utf8');
-//   const lines = data.split('\n');
-//   const result = [];
-
-//   for (const line of lines) {
-//     const word = line.trim();
-
-//     if (util.isHNS(word))
-//       result.push(word);
-//   }
-
-//   return result;
-// })();
-
 const dir = util.DATA_SRC + '-names';
 
 if (!fs.existsSync(dir))
