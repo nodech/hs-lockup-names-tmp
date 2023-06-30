@@ -27,8 +27,9 @@ const DATA_SRC = util.DATA_SRC;
 const TLD_PATH = Path.resolve(DATA_SRC, 'tlds-alpha-by-domain.txt');
 const ALEXA_PATH = Path.resolve(DATA_SRC, 'top-1m.csv');
 const ROOT_PATH = Path.resolve(DATA_SRC, 'root.zone');
-const WORDS = require(Path.resolve(util.DATA_SRC, 'words.json'));
 const {CUSTOM} = require(Path.resolve(util.DATA_SRC, 'custom.js'));
+// New words come from updated /usr/share/dict/words
+const WORDS = require(Path.resolve(util.DATA_SRC, 'words.json'));
 
 const CCTLD = (() => {
   const data = fs.readFileSync(TLD_PATH, 'utf8');
