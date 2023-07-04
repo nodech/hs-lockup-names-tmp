@@ -22,14 +22,14 @@ const {countLabels, trimFQDN} = require('bns/lib/util');
 const util = require('./lib/util');
 const {TLD, BLACKLIST} = require('./lib/common');
 
-const DATA_SRC = util.DATA_SRC;
+const DATA_SRC = util.getDataSource();
 
 const TLD_PATH = Path.resolve(DATA_SRC, 'tlds-alpha-by-domain.txt');
 const ALEXA_PATH = Path.resolve(DATA_SRC, 'top-1m.csv');
 const ROOT_PATH = Path.resolve(DATA_SRC, 'root.zone');
-const {CUSTOM} = require(Path.resolve(util.DATA_SRC, 'custom.js'));
+const {CUSTOM} = require(Path.resolve(DATA_SRC, 'custom.js'));
 // New words come from updated /usr/share/dict/words
-const WORDS = require(Path.resolve(util.DATA_SRC, 'words.json'));
+const WORDS = require(Path.resolve(DATA_SRC, 'words.json'));
 
 const CCTLD = (() => {
   const data = fs.readFileSync(TLD_PATH, 'utf8');
@@ -138,7 +138,7 @@ const ALEXA = (() => {
   return result;
 })();
 
-const dir = util.DATA_SRC + '-names';
+const dir = util.NAMES_SRC;
 
 if (!fs.existsSync(dir))
   fs.mkdirSync(dir);
