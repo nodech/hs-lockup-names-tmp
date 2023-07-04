@@ -20,7 +20,7 @@ const path = require('path');
 const {fromZone} = require('bns/lib/wire');
 const {countLabels, trimFQDN} = require('bns/lib/util');
 const util = require('./lib/util');
-const {TLD, BLACKLIST} = require('./lib/common');
+const {TLD, BLACKLIST, TRADEMARKS} = require('./lib/common');
 
 const DATA_PATH = util.DATA_PATH;
 
@@ -177,4 +177,4 @@ fs.writeFileSync(
 
 fs.writeFileSync(
   path.resolve(dir, 'trademarks.json'),
-  JSON.stringify(util.TRADEMARKS, null, 2) + '\n');
+  JSON.stringify(TRADEMARKS, null, 2) + '\n');
