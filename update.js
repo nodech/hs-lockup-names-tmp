@@ -16,20 +16,20 @@
 
 const assert = require('assert');
 const fs = require('bfile');
-const Path = require('path');
+const path = require('path');
 const {fromZone} = require('bns/lib/wire');
 const {countLabels, trimFQDN} = require('bns/lib/util');
 const util = require('./lib/util');
 const {TLD, BLACKLIST} = require('./lib/common');
 
-const DATA_SRC = util.getDataSource();
+const DATA_PATH = util.DATA_PATH;
 
-const TLD_PATH = Path.resolve(DATA_SRC, 'tlds-alpha-by-domain.txt');
-const ALEXA_PATH = Path.resolve(DATA_SRC, 'top-1m.csv');
-const ROOT_PATH = Path.resolve(DATA_SRC, 'root.zone');
-const {CUSTOM} = require(Path.resolve(DATA_SRC, 'custom.js'));
+const TLD_PATH = path.resolve(DATA_PATH, 'tlds-alpha-by-domain.txt');
+const ALEXA_PATH = path.resolve(DATA_PATH, 'top-1m.csv');
+const ROOT_PATH = path.resolve(DATA_PATH, 'root.zone');
+const {CUSTOM} = require(path.resolve(DATA_PATH, 'custom.js'));
 // New words come from updated /usr/share/dict/words
-const WORDS = require(Path.resolve(DATA_SRC, 'words.json'));
+const WORDS = require(path.resolve(DATA_PATH, 'words.json'));
 
 const CCTLD = (() => {
   const data = fs.readFileSync(TLD_PATH, 'utf8');
@@ -138,43 +138,43 @@ const ALEXA = (() => {
   return result;
 })();
 
-const dir = util.NAMES_SRC;
+const dir = util.NAMES_PATH;
 
 if (!fs.existsSync(dir))
   fs.mkdirSync(dir);
 
 fs.writeFileSync(
-  Path.resolve(dir, 'blacklist.json'),
+  path.resolve(dir, 'blacklist.json'),
   JSON.stringify(BLACKLIST, null, 2) + '\n');
 
 fs.writeFileSync(
-  Path.resolve(dir, 'custom.json'),
+  path.resolve(dir, 'custom.json'),
   JSON.stringify(CUSTOM, null, 2) + '\n');
 
 fs.writeFileSync(
-  Path.resolve(dir, 'tld.json'),
+  path.resolve(dir, 'tld.json'),
   JSON.stringify(TLD, null, 2) + '\n');
 
 fs.writeFileSync(
-  Path.resolve(dir, 'cctld.json'),
+  path.resolve(dir, 'cctld.json'),
   JSON.stringify(CCTLD, null, 2) + '\n');
 
 fs.writeFileSync(
-  Path.resolve(dir, 'gtld.json'),
+  path.resolve(dir, 'gtld.json'),
   JSON.stringify(GTLD, null, 2) + '\n');
 
 fs.writeFileSync(
-  Path.resolve(dir, 'rtld.json'),
+  path.resolve(dir, 'rtld.json'),
   JSON.stringify(RTLD, null, 2) + '\n');
 
 fs.writeFileSync(
-  Path.resolve(dir, 'alexa.json'),
+  path.resolve(dir, 'alexa.json'),
   JSON.stringify(ALEXA, null, 2) + '\n');
 
 fs.writeFileSync(
-  Path.resolve(dir, 'words.json'),
+  path.resolve(dir, 'words.json'),
   JSON.stringify(WORDS, null, 2) + '\n');
 
 fs.writeFileSync(
-  Path.resolve(dir, 'trademarks.json'),
+  path.resolve(dir, 'trademarks.json'),
   JSON.stringify(util.TRADEMARKS, null, 2) + '\n');
