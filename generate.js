@@ -64,7 +64,7 @@ function compile() {
     // Ignore blacklist.
     if (blacklist.has(name)) {
       invalidate(domain, name, rank, 'blacklist');
-      return;
+      return false;
     }
 
     // Ignore domains that were NOT reserved.
@@ -72,7 +72,7 @@ function compile() {
 
     if (!RESERVE_NEW && !rules.isReserved(hash, 1, network)) {
       invalidate(domain, name, rank, 'not-reserved');
-      return;
+      return false;
     }
 
     // Check for collisions.
@@ -90,7 +90,7 @@ function compile() {
 
       cache.collisions += 1;
 
-      return;
+      return false;
     }
 
     const item = {
@@ -103,6 +103,7 @@ function compile() {
 
     table.set(name, item);
     names.push(item);
+    return true;
   };
 
   // Custom TLDs (these are domains
@@ -134,7 +135,7 @@ function compile() {
   let countAlexa = 0;
 
   // Alexa top 100,000 second-level domains.
-  for (let i = 0; i < TOPN; i++) {
+  for (let i = 0; i < ALEXA.length; i++) {
     const domain_ = ALEXA[i];
     const parts = domain_.split('.');
     const rank = i + 1;
@@ -243,13 +244,15 @@ function compile() {
 
     const tld = parts.join('.');
 
-    insert(domain, rank, name, tld);
-    countAlexa++;
+    const inserted = insert(domain, rank, name, tld);
+
+    if (inserted)
+      countAlexa++;
 
     if (FILL && countAlexa >= TOPN)
       break;
 
-    if (!FILL && i === TOPN)
+    if (!FILL && (i + 1) === TOPN)
       break;
   }
 
