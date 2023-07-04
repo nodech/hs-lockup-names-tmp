@@ -274,6 +274,9 @@ console.error(`  ${RESERVE_NEW ? 'Reserve' : 'Do not reserve'} new Alexa/ICANN/C
 const [names, invalid] = compile();
 // const items = [];
 
+if (!fs.existsSync(path.dirname(BUILD_PATH)))
+  fs.mkdirSync(path.dirname(BUILD_PATH));
+
 if (!fs.existsSync(BUILD_PATH))
   fs.mkdirSync(BUILD_PATH);
 

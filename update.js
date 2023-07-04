@@ -140,6 +140,9 @@ const ALEXA = (() => {
 
 const dir = util.NAMES_PATH;
 
+if (!fs.existsSync(path.dirname(dir)))
+  fs.mkdirSync(path.dirname(dir));
+
 if (!fs.existsSync(dir))
   fs.mkdirSync(dir);
 
