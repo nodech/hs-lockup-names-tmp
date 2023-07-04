@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -ex
+
+# Generate updated - no fill - no reserve
+./generate.js 
+
+# Generate updated - fill - no reserve
+./generate.js --fill=true
+
+# Generate updated - no fill - reserve
+./generate.js --reserve=true
+
+# Generate updated - fill - reserve
+./generate.js --reserve=true --fill=true
+
+# Generate original - no fill - no reserve
+./generate.js --data-source=original
+
+# Generate original - fill - no reserve
+./generate.js --data-source=original --fill=true
+
+# Generate original - no fill - reserve
+./generate.js --data-source=original --reserve=true
+
+# Generate original - fill - reserve
+./generate.js --data-source=original --reserve=true --fill=true
