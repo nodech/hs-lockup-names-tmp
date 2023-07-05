@@ -11,11 +11,12 @@ const util = require('./lib/util');
 const configs = util.parseConfig();
 
 const TOPN = configs.uint('top', 10000);
-const FILL = configs.bool('fill', false);
-const RESERVE_NEW = configs.bool('reserve', false);
+const FILL = true;
+const DATA_PATH = util.DATA_PATH;
 const NAMES_PATH = util.NAMES_PATH;
 const BUILD_PATH = util.BUILD_PATH;
 
+const EXTRAS = require(path.join(DATA_PATH, 'extras'));
 const BLACKLIST = require(path.join(NAMES_PATH, 'blacklist.json'));
 const CUSTOM = require(path.join(NAMES_PATH, 'custom.json'));
 const TRADEMARKS = require(path.join(NAMES_PATH, 'trademarks.json'));
@@ -23,20 +24,13 @@ const RTLD = require(path.join(NAMES_PATH, 'rtld.json'));
 const ALEXA = require(path.join(NAMES_PATH, 'alexa.json'));
 const WORDS = require(path.join(NAMES_PATH, 'words.json'));
 
+const exclude = new Set(EXTRAS.excludeNames);
 const blacklist = new Set(BLACKLIST);
 const words = new Set(WORDS);
 const network = require('hsd/lib/protocol/network').get('main');
 
-const VALID_PATH = path.join(BUILD_PATH, `valid-${TOPN}-`
-  + `${FILL ? 'fill' : 'nofill'}-`
-  + `${RESERVE_NEW ? 'reserve' : 'noreserve' }`
-  + '.json');
-
-const INVALID_PATH = path.join(BUILD_PATH, `invalid-${TOPN}-`
-  + `${FILL ? 'fill' : 'nofill'}-`
-  + `${RESERVE_NEW ? 'reserve' : 'noreserve' }`
-  + '.json');
-
+const VALID_PATH = path.join(BUILD_PATH, `valid-${TOPN}.json`);
+const INVALID_PATH = path.join(BUILD_PATH, `invalid-${TOPN}.json`);
 // const LOCKUP_JSON = path.join(BUILD_PATH, 'lockup.json');
 // const LOCKUP_DB = path.join(BUILD_PATH, 'lockup.db');
 
@@ -70,8 +64,13 @@ function compile() {
     // Ignore domains that were NOT reserved.
     const hash = rules.hashName(name);
 
-    if (!RESERVE_NEW && !rules.isReserved(hash, 1, network)) {
+    if (!rules.isReserved(hash, 1, network)) {
       invalidate(domain, name, rank, 'not-reserved');
+      return false;
+    }
+
+    if (exclude.has(name)) {
+      invalidate(domain, name, rank, 'excluded');
       return false;
     }
 
@@ -270,9 +269,6 @@ function sortRank(a, b) {
 }
 
 console.error(`Compiling top ${TOPN} Alexa domains from ${util.getName()}...`);
-console.error(`  ${FILL ? 'FILL until ' + TOPN : 'FILTER from ' + TOPN} Alexa domains...`);
-// eslint-disable-next-line max-len
-console.error(`  ${RESERVE_NEW ? 'Reserve' : 'Do not reserve'} new Alexa/ICANN/CUSTOM/TRADEMARK domains...`);
 
 const [names, invalid] = compile();
 // const items = [];
@@ -328,4 +324,3 @@ if (!fs.existsSync(BUILD_PATH))
 
   fs.writeFileSync(INVALID_PATH, out);
 }
-

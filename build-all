@@ -2,21 +2,8 @@
 
 set -ex
 
-# Generate updated - no fill - no reserve
+# Generate updated - fill - no reserve
 ./generate.js 
 
-# Generate updated - fill - no reserve
-./generate.js --fill=true
-
-# Generate updated - no fill - reserve
-./generate.js --reserve=true
-
-# Generate updated - fill - reserve
-./generate.js --reserve=true --fill=true
-
-# Generate original - no fill - no reserve
-# NOTE: Reserve option does not apply to "original" data source
-./generate.js --data-source=original
-
 # Generate original - fill - no reserve
-./generate.js --data-source=original --fill=true
+./generate.js --data-source=original
