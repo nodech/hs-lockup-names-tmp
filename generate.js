@@ -5,11 +5,13 @@
 const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
+const bio = require('bufio');
 const rules = require('hsd/lib/covenants/rules');
 const util = require('./lib/util');
 
 const configs = util.parseConfig();
 
+const DATA_SRC = util.getName();
 const TOPN = configs.uint('top', 10000);
 const FILL = true;
 const DATA_PATH = util.DATA_PATH;
@@ -31,8 +33,8 @@ const network = require('hsd/lib/protocol/network').get('main');
 
 const VALID_PATH = path.join(BUILD_PATH, `valid-${TOPN}.json`);
 const INVALID_PATH = path.join(BUILD_PATH, `invalid-${TOPN}.json`);
-// const LOCKUP_JSON = path.join(BUILD_PATH, 'lockup.json');
-// const LOCKUP_DB = path.join(BUILD_PATH, 'lockup.db');
+const LOCKUP_JSON = path.join(BUILD_PATH, 'lockup.json');
+const LOCKUP_DB = path.join(BUILD_PATH, 'lockup.db');
 
 function compile() {
   const table = new Map();
@@ -227,14 +229,14 @@ function compile() {
       continue;
     }
 
-    // Use stricter rules after rank 50k.
-    if (rank > 50000) {
-      // Ignore two-letter domains after 50k.
+    // Use stricter rules after rank 5k.
+    if (rank > 5000) {
+      // Ignore two-letter domains after 5k.
       if (name.length === 2) {
         invalidate(domain, name, rank, 'two-letter');
         continue;
       }
-      // Ignore english words after 50k.
+      // Ignore english words after 5k.
       if (words.has(name)) {
         invalidate(domain, name, rank, 'english-word');
         continue;
@@ -268,10 +270,16 @@ function sortRank(a, b) {
   return util.compare(a.name, b.name);
 }
 
+function sortHash(a, b) {
+  return a.hash.compare(b.hash);
+}
+
+// Execute
+
 console.error(`Compiling top ${TOPN} Alexa domains from ${util.getName()}...`);
 
 const [names, invalid] = compile();
-// const items = [];
+const items = [];
 
 if (!fs.existsSync(path.dirname(BUILD_PATH)))
   fs.mkdirSync(path.dirname(BUILD_PATH));
@@ -323,4 +331,124 @@ if (!fs.existsSync(BUILD_PATH))
   const out = json.join('\n');
 
   fs.writeFileSync(INVALID_PATH, out);
+}
+
+// Prepare data for compilation.
+{
+  let totalTLDS = 0;
+  let totalCustom = 0;
+  let totalAlexa = 0;
+  let totalTrademarks = 0;
+
+  for (const {name, domain, rank} of names) {
+    let flags = 0;
+
+    if (rank === 0) {
+      totalTLDS++;
+      flags |= 1;
+    }
+
+    if (rank === -1) {
+      totalTrademarks++;
+      flags |= 2;
+    }
+
+    if (rank === -2) {
+      totalCustom++;
+      flags |= 4;
+    }
+
+    if (rank > 0)
+      totalAlexa++;
+
+    const hash = rules.hashName(name);
+    const hex = hash.toString('hex');
+    const target = `${domain}.`;
+
+    items.push({
+      name,
+      hash,
+      hex,
+      target,
+      flags
+    });
+  }
+
+  // 5 TLDs are not reserved.
+  if (DATA_SRC === 'updated') {
+    // ["kids", "kids", 0, "not-reserved"],
+    // ["music", "music", 0, "not-reserved"],
+    // ["xn--4dbrk0ce", "xn--4dbrk0ce", 0, "not-reserved"],
+    // ["xn--cckwcxetd", "xn--cckwcxetd", 0, "not-reserved"],
+    // ["xn--jlq480n2rg", "xn--jlq480n2rg", 0, "not-reserved"],
+    assert(totalTLDS === RTLD.length - 5);
+  }
+
+  if (DATA_SRC === 'original') {
+    assert(totalTLDS === RTLD.length);
+  }
+
+  assert(totalCustom === CUSTOM.length);
+  assert(totalTrademarks === TRADEMARKS.length);
+  assert(totalAlexa === TOPN);
+}
+
+// Build final databases.
+items.sort(sortHash);
+
+{
+  const ZERO_HASH = Array(32 + 1).join('00');
+
+  const json = [
+    '{',
+    `  "${ZERO_HASH}": [${items.length}],`
+  ];
+
+  for (const {hex, target, flags} of items)
+    json.push(`  "${hex}": ["${target}", ${flags}],`);
+
+  json[json.length - 1] = json[json.length - 1].slice(0, -1);
+  json.push('}');
+  json.push('');
+
+  const out = json.join('\n');
+
+  fs.writeFileSync(LOCKUP_JSON, out);
+}
+
+{
+  const bw = bio.write(30 << 20);
+  const {data} = bw;
+
+  bw.writeU32(items.length);
+
+  const offsets = [];
+
+  for (const item of items) {
+    bw.writeBytes(item.hash);
+    offsets.push(bw.offset);
+    bw.writeU32(0);
+  }
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    const {offset} = bw;
+    const pos = offsets[i];
+
+    bio.writeU32(data, offset, pos);
+
+    assert(item.target.length <= 255);
+
+    const index = item.target.indexOf('.');
+    assert(index !== -1);
+
+    bw.writeU8(item.target.length);
+    bw.writeString(item.target, 'ascii');
+    bw.writeU8(item.flags);
+    bw.writeU8(index);
+  }
+
+  const raw = bw.slice();
+
+  fs.writeFileSync(LOCKUP_DB, raw);
 }
