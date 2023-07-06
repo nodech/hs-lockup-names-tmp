@@ -13,7 +13,7 @@ const configs = util.parseConfig();
 
 const DATA_SRC = util.getName();
 const TOPN = configs.uint('top', 10000);
-const FILL = true;
+const FILL = configs.bool('fill', true);
 const DATA_PATH = util.DATA_PATH;
 const NAMES_PATH = util.NAMES_PATH;
 const BUILD_PATH = util.BUILD_PATH;
