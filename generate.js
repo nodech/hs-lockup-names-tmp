@@ -4,7 +4,7 @@
 
 const assert = require('assert');
 const path = require('path');
-const fs = require('fs');
+const fs = require('bfile');
 const bio = require('bufio');
 const rules = require('hsd/lib/covenants/rules');
 const util = require('./lib/util');
@@ -35,6 +35,7 @@ const VALID_PATH = path.join(BUILD_PATH, `valid-${TOPN}.json`);
 const INVALID_PATH = path.join(BUILD_PATH, `invalid-${TOPN}.json`);
 const LOCKUP_JSON = path.join(BUILD_PATH, 'lockup.json');
 const LOCKUP_DB = path.join(BUILD_PATH, 'lockup.db');
+const LOCKUP_DB_COMPACT = path.join(BUILD_PATH, 'lockup-compact.db');
 
 function compile() {
   const table = new Map();
@@ -348,14 +349,12 @@ if (!fs.existsSync(BUILD_PATH))
       flags |= 1;
     }
 
-    if (rank === -1) {
+    if (rank === -1)
       totalTrademarks++;
-      flags |= 2;
-    }
 
     if (rank === -2) {
       totalCustom++;
-      flags |= 4;
+      flags |= 2;
     }
 
     if (rank > 0)
@@ -451,4 +450,23 @@ items.sort(sortHash);
   const raw = bw.slice();
 
   fs.writeFileSync(LOCKUP_DB, raw);
+}
+
+{
+  const bw = bio.write(30 << 20);
+
+  bw.writeU32(items.length);
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+
+    assert(item.target.length <= 255);
+
+    bw.writeBytes(item.hash);
+    bw.writeU8(item.flags);
+  }
+
+  const raw = bw.slice();
+
+  fs.writeFileSync(LOCKUP_DB_COMPACT, raw);
 }
