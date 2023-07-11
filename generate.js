@@ -231,7 +231,7 @@ function compile() {
     }
 
     // Use stricter rules after rank 5k.
-    if (rank > 5000) {
+    if (rank > 1000) {
       // Ignore two-letter domains after 5k.
       if (name.length === 2) {
         invalidate(domain, name, rank, 'two-letter');
