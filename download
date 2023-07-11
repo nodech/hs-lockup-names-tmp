@@ -7,10 +7,12 @@ set -ex
 # rm top-1m.csv.zip
 # mv top-1m.csv data/
 
+mkdir -p data/updated
+
 wget https://data.iana.org/TLD/tlds-alpha-by-domain.txt
-mv tlds-alpha-by-domain.txt data/
+mv tlds-alpha-by-domain.txt data/updated/
 
 wget https://www.internic.net/domain/root.zone
-mv root.zone data/
+mv root.zone data/updated/
 
 # git commit -a -m 'data: update name data.'

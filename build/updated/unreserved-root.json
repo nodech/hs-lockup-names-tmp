@@ -138,6 +138,12 @@
     "root": true
   },
   {
+    "name": "vuelos",
+    "hash": "887010b2a33bdf4a8d7dd5afa338911e23710b0985edf10d7e2a945d02960081",
+    "target": "vuelos.",
+    "root": true
+  },
+  {
     "name": "aigo",
     "hash": "8ad7ee6f02c3d8abe2decbd63dfcb68d6156911e16913f45c5dd55938eac4865",
     "target": "aigo.",
@@ -168,9 +174,21 @@
     "root": true
   },
   {
+    "name": "hoteles",
+    "hash": "9f9065fcf74defae25d1fbeee5f0c5d2e2459c3301d6c2bac5872fe8d3f80094",
+    "target": "hoteles.",
+    "root": true
+  },
+  {
     "name": "linde",
     "hash": "a156e94509ac1b5813f5efde99cc8452bf38175dc828416c446f5ec8aff0ce95",
     "target": "linde.",
+    "root": true
+  },
+  {
+    "name": "passagens",
+    "hash": "ad857589b83d35e60b60af86ad1a26d2a28b88d4d5d14da0fa6c82aab920a955",
+    "target": "passagens.",
     "root": true
   },
   {
@@ -225,6 +243,12 @@
     "name": "iveco",
     "hash": "d8a536988e7c5d1985e355905e88f7a17c08a54c3d8e387fc9269551f809689a",
     "target": "iveco.",
+    "root": true
+  },
+  {
+    "name": "nationwide",
+    "hash": "df127e26d96d7e829986ce64697cb19466b10c4c69fed770a0f895b6bf1bfef0",
+    "target": "nationwide.",
     "root": true
   },
   {
