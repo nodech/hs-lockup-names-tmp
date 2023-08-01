@@ -64,11 +64,10 @@ The 3 directories `data`, `names`, `build` have sub-dirs based on the data sourc
 
 Scripts accept config options as arguments and environment variables. Use as `--name <value>` arg or `HNS_NAME=<value>` env.
 
-| name | default | description |
-|---|---|---|
-| data-source | 'updated' | the data source name inside `data`, `names`, `build` directories |
-| top | 10000 | number of top Alexa names to consider |
-| fill | true | if true, then `top` is the number of Alexa names<br>if false, then `top` is the hard cutoff Alexa rank |
+| name        | default   | description                                                      |
+| ----------- | --------- | ---------------------------------------------------------------- |
+| data-source | 'updated' | the data source name inside `data`, `names`, `build` directories       |
+| top         | 10000     | number of top Alexa names to consider                            |
 
 
 ## Algorithm
