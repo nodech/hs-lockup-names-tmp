@@ -1256,7 +1256,6 @@
   "tiaa": ["", 0, 1],
   "tickets": ["", 0, 0],
   "tienda": ["", 0, 0],
-  "tiffany": ["", 0, 1],
   "tips": ["", 0, 0],
   "tires": ["", 0, 0],
   "tirol": ["", 0, 0],
@@ -11370,6 +11369,7 @@
   "atu": ["ac.ir", 18705, 0],
   "lxax": ["com", 18706, 0],
   "rankedboost": ["com", 18708, 0],
+  "tiffany": ["com", 18709, 0],
   "hdfilme": ["best", 18710, 0],
   "desdelinux": ["net", 18711, 0],
   "prosv": ["ru", 18713, 0],
@@ -11557,6 +11557,5 @@
   "stackabuse": ["com", 19138, 0],
   "bancobpm": ["it", 19140, 0],
   "cccs": ["edu", 19141, 0],
-  "fema": ["gov", 19142, 0],
-  "freeadultcomix": ["com", 19143, 0]
+  "fema": ["gov", 19142, 0]
 }
