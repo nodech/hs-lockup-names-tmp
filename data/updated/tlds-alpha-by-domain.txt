@@ -1,4 +1,4 @@
-# Version 2023080100, Last Updated Tue Aug  1 07:07:01 2023 UTC
+# Version 2023080300, Last Updated Thu Aug  3 07:07:01 2023 UTC
 AAA
 AARP
 ABB
@@ -802,7 +802,6 @@ MTR
 MU
 MUSEUM
 MUSIC
-MUTUAL
 MV
 MW
 MX
